@@ -22,7 +22,7 @@ const contactActions = [
   },
   {
     label: "Open location in Maps",
-    href: "https://maps.app.goo.gl/92i2KZv3dUMnHkB79",
+    href: "https://maps.app.goo.gl/iiPR2E9xySgLkwhb8",
     className: "bg-rose-600 hover:bg-rose-700",
     icon: (
       <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0 object-contain" fill="none" aria-hidden="true">

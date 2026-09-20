@@ -83,3 +83,7 @@ body {
 html {
   height: auto !important;
 }
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}

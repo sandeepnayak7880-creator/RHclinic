@@ -1,6 +1,6 @@
 "use client";
 
-import { Languages } from "lucide-react";
+import { Languages, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function LanguageSwitcher() {
@@ -33,22 +33,36 @@ export function LanguageSwitcher() {
     window.location.reload();
   }
 
+  // Determine what text to show on desktop
+  const displayLang = selectedLang === "te" ? "Telugu" : selectedLang === "hi" ? "Hindi" : "English";
+
   return (
-    <div className="flex items-center gap-2">
-      <label className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-2 py-1 text-emerald-900">
-      <Languages className="h-4 w-4 text-emerald-700" aria-hidden="true" />
-      <span className="sr-only">Choose language</span>
+    <div className="relative flex items-center">
+      
+      {/* 1. VISUAL LAYER: What the user actually sees */}
+      <div className="flex items-center gap-1 sm:gap-2 rounded-full border border-emerald-200 bg-white px-2 py-1.5 sm:px-3 hover:bg-emerald-50 transition-colors pointer-events-none">
+        <Languages className="h-4 w-4 text-emerald-700 shrink-0" aria-hidden="true" />
+        
+        {/* The text is completely hidden on mobile ('hidden'), but shows on desktop ('sm:block') */}
+        <span className="hidden sm:block text-sm font-medium text-emerald-900">
+          {displayLang}
+        </span>
+        
+        <ChevronDown className="h-3 w-3 text-emerald-700 shrink-0" aria-hidden="true" />
+      </div>
+
+      {/* 2. INTERACTION LAYER: Invisible native select placed perfectly over the visual layer */}
       <select
         value={selectedLang}
         onChange={handleLanguageChange}
         aria-label="Choose language"
-        className="cursor-pointer bg-transparent text-sm text-emerald-900 outline-none"
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       >
         <option value="en">English</option>
         <option value="te">Telugu</option>
         <option value="hi">Hindi</option>
       </select>
-      </label>
+
       <div id="google_translate_element" className="hidden" aria-hidden="true" />
     </div>
   );
