@@ -17,7 +17,11 @@ export const metadata: Metadata = {
   title: "Raghavendra Homoeopathic Clinic | Best Homeopathy in Wanaparthy",
   description:
     "Trusted homeopathic treatments in Wanaparthy for chronic illnesses, skin disorders, hair fall, allergies, and general wellness. Book your consultation today.",
-  keywords: [
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+    keywords: [
     "Raghavendra Homoeopathic Clinic",
     "Homeopathy Wanaparthy",
     "Best Homeopathy Doctor Wanaparthy",
