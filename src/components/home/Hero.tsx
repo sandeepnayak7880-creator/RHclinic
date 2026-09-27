@@ -87,12 +87,6 @@ export function Hero() {
             >
               Book an Appointment
             </Link>
-            <Link
-              href="/about"
-              className="inline-flex items-center justify-center rounded-full border border-teal-200 bg-white px-6 py-3.5 text-sm font-semibold text-teal-800 transition-colors hover:border-teal-300 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-            >
-              Learn More
-            </Link>
           </div>
           <div className="mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-emerald-200 bg-white px-5 py-3 text-sm font-medium text-teal-800 shadow-sm">
             <span>Call us: {siteConfig.phone}</span>
