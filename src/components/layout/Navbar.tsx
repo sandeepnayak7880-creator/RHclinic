@@ -9,21 +9,22 @@ export function Navbar() {
   );
 
   return (
-    <header className="border-b border-emerald-100 bg-white">
-      {/* 1. Root Container: Reduced gap/padding on mobile, added overflow-hidden to prevent horizontal scroll */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-6 px-3 py-3 sm:px-6 lg:px-8 overflow-hidden">
+    {/* FIX 1: Added relative z-50 so the dropdown sits on top of all page content */}
+    <header className="relative z-50 border-b border-emerald-100 bg-white">
+      {/* FIX 2: Removed "overflow-hidden" so the dropdown isn't clipped out of existence */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-6 px-3 py-3 sm:px-6 lg:px-8">
         
-        {/* 2. Brand Section: Added min-w-0 and shrink to allow text wrapping, reduced logo/text size on mobile */}
         <Link 
           href="/" 
           className="flex items-center gap-2 sm:gap-3 text-emerald-950 transition-colors hover:text-emerald-700 min-w-0 shrink"
         >
+          {/* FIX 3: Added rounded-full object-cover back so your logo stays circular! */}
           <Image
             src="/logo.png"
             alt={siteConfig.name}
             width={52}
             height={52}
-            className="h-9 w-9 sm:h-12 sm:w-12 object-contain shrink-0"
+            className="h-9 w-9 sm:h-12 sm:w-12 rounded-full object-cover shrink-0"
             priority
           />
           <span className="text-sm sm:text-lg font-semibold leading-tight tracking-tight line-clamp-2 min-w-0">
@@ -31,7 +32,6 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* 3. Desktop Navigation (Unchanged) */}
         <nav aria-label="Primary navigation" className="hidden items-center gap-7 md:flex shrink-0">
           {primaryLinks.map((link) => (
             <Link
@@ -50,9 +50,7 @@ export function Navbar() {
           </Link>
         </nav>
 
-        {/* 4. Right Actions Wrapper: Groups Menu and Language Switcher so they never overlap the title */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          {/* Mobile Menu Toggle */}
           <details className="relative md:hidden">
             <summary className="cursor-pointer list-none rounded-full border border-emerald-200 px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-800 hover:bg-emerald-50 whitespace-nowrap">
               Menu
@@ -73,12 +71,10 @@ export function Navbar() {
             </nav>
           </details>
 
-          {/* Language Switcher */}
           <div className="relative z-40 shrink-0">
             <LanguageSwitcher />
           </div>
         </div>
-
       </div>
     </header>
   );
