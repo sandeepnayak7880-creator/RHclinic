@@ -9,16 +9,13 @@ export function Navbar() {
   );
 
   return (
-    {/* FIX 1: Added relative z-50 so the dropdown sits on top of all page content */}
     <header className="relative z-50 border-b border-emerald-100 bg-white">
-      {/* FIX 2: Removed "overflow-hidden" so the dropdown isn't clipped out of existence */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-6 px-3 py-3 sm:px-6 lg:px-8">
         
         <Link 
           href="/" 
           className="flex items-center gap-2 sm:gap-3 text-emerald-950 transition-colors hover:text-emerald-700 min-w-0 shrink"
         >
-          {/* FIX 3: Added rounded-full object-cover back so your logo stays circular! */}
           <Image
             src="/logo.png"
             alt={siteConfig.name}
