@@ -88,6 +88,7 @@ const initialFormData: AppointmentFormData = {
 
 export function AppointmentForm() {
   const [formData, setFormData] = useState(initialFormData);
+  const [consultationType, setConsultationType] = useState("In-Person Clinic Visit");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [blockedDates, setBlockedDates] = useState<BlockedDate[]>([]);
   const [blockedDateWarning, setBlockedDateWarning] = useState("");
@@ -95,6 +96,7 @@ export function AppointmentForm() {
   const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
   const [slotError, setSlotError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -208,6 +210,7 @@ export function AppointmentForm() {
       const supabase = createClient();
       const { error } = await supabase.from("appointments").insert({
         ...formData,
+        consultation_type: consultationType,
         status: "Pending",
       });
 
@@ -219,17 +222,38 @@ export function AppointmentForm() {
         .from("notifications")
         .insert({
           title: "New Appointment",
-          message: `${formData.patient_name} booked an appointment for ${formData.appointment_date} at ${formData.appointment_time}.`,
+          message: `${formData.patient_name} booked an ${consultationType} appointment for ${formData.appointment_date} at ${formData.appointment_time}.`,
         });
 
       if (notificationError) {
         console.error("Notification Insert Error:", notificationError.message);
       }
 
+      try {
+        const emailResponse = await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.patient_name,
+            phone: formData.phone_number,
+            consultationType,
+            preferredDate: formData.appointment_date,
+            preferredTime: formData.appointment_time,
+            notes: formData.message,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          const emailError = (await emailResponse.json()) as { error?: string };
+          console.error("Booking email notification failed:", emailError.error ?? emailResponse.statusText);
+        }
+      } catch (emailError) {
+        console.error("Booking email notification failed:", emailError);
+      }
+
       setFormData(initialFormData);
-      setSuccessMessage(
-        "Your appointment request has been received. We will contact you shortly to confirm it.",
-      );
+      setConsultationType("In-Person Clinic Visit");
+      setIsSuccessModalOpen(true);
     } catch {
       setErrorMessage(
         "We could not submit your request right now. Please try again or call the clinic directly.",
@@ -243,7 +267,30 @@ export function AppointmentForm() {
     "mt-2 w-full rounded-xl border border-teal-200 bg-white px-4 py-3 text-sm text-teal-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10";
 
   return (
+    <>
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <fieldset className="space-y-3">
+        <legend className="text-sm font-semibold text-teal-950">Consultation type</legend>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { value: "In-Person Clinic Visit", label: "In-Person Clinic Visit", icon: "🏥" },
+            { value: "Online Video / Call", label: "Online Video / Call", icon: "📞" },
+          ].map((option) => (
+            <label key={option.value} className="has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50 flex min-w-0 cursor-pointer items-center gap-2 rounded-2xl border border-teal-200 bg-white p-3 text-sm font-medium text-teal-900 transition-colors sm:gap-3 sm:p-4">
+              <input
+                type="radio"
+                name="consultation_type"
+                value={option.value}
+                checked={consultationType === option.value}
+                onChange={(event) => setConsultationType(event.target.value)}
+                className="accent-emerald-600"
+              />
+              <span aria-hidden="true" className="text-lg">{option.icon}</span>
+              <span className="min-w-0">{option.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <div className="grid gap-6 sm:grid-cols-2">
         <label className="text-sm font-semibold text-teal-950">
           Full Name
@@ -372,5 +419,16 @@ export function AppointmentForm() {
         {isSubmitting ? "Booking..." : "Book an Appointment"}
       </button>
     </form>
+    {isSuccessModalOpen ? (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-teal-950/50 px-5 py-8" role="presentation">
+        <div role="dialog" aria-modal="true" aria-labelledby="booking-success-title" className="w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl sm:p-9">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-2xl text-emerald-700" aria-hidden="true">✓</div>
+          <h2 id="booking-success-title" className="mt-5 text-2xl font-semibold text-teal-950">Booking Received!</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-600">Dr. Raghavendra&apos;s office will reach out shortly to confirm your time slot.</p>
+          <button type="button" onClick={() => setIsSuccessModalOpen(false)} className="mt-7 rounded-full bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-700">Done</button>
+        </div>
+      </div>
+    ) : null}
+    </>
   );
 }

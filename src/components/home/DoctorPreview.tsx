@@ -1,8 +1,17 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export function DoctorPreview() {
   return (
-    <section className="bg-emerald-50 py-20 lg:py-24">
+    <motion.section
+      className="bg-emerald-50 py-20 lg:py-24"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
         <div className="relative mx-auto w-full max-w-md">
           <div className="overflow-hidden rounded-[2rem] border-8 border-white bg-teal-100 shadow-xl shadow-teal-900/10">
@@ -44,6 +53,6 @@ export function DoctorPreview() {
           </p>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

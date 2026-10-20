@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 import { createClient } from "@/lib/supabase/client";
@@ -67,7 +68,13 @@ export function Hero() {
   const isVideo = currentImage ? /\.(mp4|webm|ogg|mov)(?:\?.*)?$/i.test(currentImage) : false;
 
   return (
-    <section className="overflow-hidden bg-teal-50">
+    <motion.section
+      className="overflow-hidden bg-teal-50"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-28">
         <div className="max-w-3xl">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
@@ -81,12 +88,14 @@ export function Hero() {
             your story, and your long-term wellbeing.
           </p>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
               href="/appointment"
               className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/10 transition-colors hover:bg-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
             >
               Book an Appointment
             </Link>
+            </motion.div>
           </div>
           <div className="mt-7 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-emerald-200 bg-white px-5 py-3 text-sm font-medium text-teal-800 shadow-sm">
             <span>Call us: {siteConfig.phone}</span>
@@ -160,6 +169,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
