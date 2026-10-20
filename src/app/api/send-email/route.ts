@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   try {
     const resend = new Resend(apiKey);
     const { data, error } = await resend.emails.send({
-      from: "Raghavendra Homoeopathic Clinic <onboarding@resend.dev>",
+      from: "Raghavendra Clinic <appointments@raghavendrahomeopathy.in>",
       to: doctorEmail,
       subject: `New appointment request: ${body.name as string}`,
       html: `
