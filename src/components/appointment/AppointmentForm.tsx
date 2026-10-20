@@ -208,11 +208,17 @@ export function AppointmentForm() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("appointments").insert({
-        ...formData,
-        consultation_type: consultationType,
-        status: "Pending",
-      });
+      const { error } = await supabase.from("appointments").insert([
+        {
+          patient_name: formData.patient_name,
+          phone_number: formData.phone_number,
+          appointment_date: formData.appointment_date,
+          appointment_time: formData.appointment_time,
+          message: formData.message,
+          consultation_type: consultationType,
+          status: "Pending",
+        },
+      ]);
 
       if (error) {
         throw error;
@@ -254,7 +260,23 @@ export function AppointmentForm() {
       setFormData(initialFormData);
       setConsultationType("In-Person Clinic Visit");
       setIsSuccessModalOpen(true);
-    } catch {
+    } catch (error) {
+      if (error && typeof error === "object") {
+        const databaseError = error as {
+          message?: string;
+          code?: string;
+          details?: string;
+          hint?: string;
+        };
+        console.error("Appointment submission failed:", {
+          message: databaseError.message,
+          code: databaseError.code,
+          details: databaseError.details,
+          hint: databaseError.hint,
+        });
+      } else {
+        console.error("Appointment submission failed:", error);
+      }
       setErrorMessage(
         "We could not submit your request right now. Please try again or call the clinic directly.",
       );
